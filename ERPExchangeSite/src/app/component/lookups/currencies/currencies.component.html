@@ -1,0 +1,125 @@
+
+<app-generic-alert   *ngIf="showAlert" [message]="alertMessage" [type]="alertType" (close)="onCloseAlert()"></app-generic-alert>
+
+
+
+
+<mat-card>
+    <mat-card-header  fxLayout="row" fxLayoutAlign="center center">
+      <mat-card-title>العملات</mat-card-title>
+    </mat-card-header>
+    <mat-card-content  fxLayout="column" fxLayoutAlign="start center" style="direction: rtl;">
+      <!-- Form for adding/editing currency -->
+      <form (ngSubmit)="saveCurrency()" style="direction: rtl;">
+
+        <mat-form-field>
+          <mat-label>العملة الافتراضيه</mat-label>
+<mat-select placeholder="اختار العملة" name="defaultCurrencyId" (selectionChange)="oncrrSelectChange($event)" [(ngModel)]="defaultCurrency.id" >
+  <mat-option *ngFor="let option of currenciesOptions" [value]="option.id">
+    {{ option.nameAr }}
+  </mat-option>
+</mat-select>
+        </mat-form-field>
+
+
+        <br/>
+        <mat-form-field>
+          
+          <mat-label>الاسم العربي</mat-label>
+          <input matInput placeholder="الاسم عربي" [(ngModel)]="currency.nameAr" name="nameAr" required>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>الاسم بالانجليزي</mat-label>
+          <input matInput placeholder="الاسم بالانجليزية" [(ngModel)]="currency.nameEn" name="nameEn" required>
+        </mat-form-field>
+        <mat-form-field>
+        <mat-label>الرمز</mat-label>
+        <input matInput placeholder="الرمز" [(ngModel)]="currency.currCode" name="currCode" required>
+      </mat-form-field>
+        <mat-form-field>
+          <mat-label>درجه المخاطر</mat-label>
+          <mat-select [disabled]="!EditRisk && isEditing" placeholder="اختار درجه المخاطر" name="riskRate" [(ngModel)]="currency.riskRate" required>
+            <mat-option *ngFor="let option of currencyOptions" [value]="option.value">
+              {{ option.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>الدولة</mat-label>
+          <mat-select placeholder="اختار الدولة" name="countryId" [(ngModel)]="currency.countryId" required>
+            <mat-option *ngFor="let option of countriesOptions" [value]="option.id">
+              {{ option.nameAr }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">{{ isEditing ? 'تعديل' : 'اضافة' }}</button>
+      </form>
+  
+      <!-- Display currencies in a table -->
+      <table mat-table [dataSource]="currencies">
+        <!-- Columns -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let currency">{{ currency.id }}</td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="nameAr">
+          <th mat-header-cell *matHeaderCellDef>الاسم عربي</th>
+          <td mat-cell *matCellDef="let currency">{{ currency.nameAr }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="nameEn">
+          <th mat-header-cell *matHeaderCellDef>الاسم بالانجليزية</th>
+          <td mat-cell *matCellDef="let currency">{{ currency.nameEn }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="currCode">
+          <th mat-header-cell *matHeaderCellDef>الرمز</th>
+          <td mat-cell *matCellDef="let currency">{{ currency.currCode }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="riskRate">
+          <th mat-header-cell *matHeaderCellDef>درجه المخاطر</th>
+          <td mat-cell *matCellDef="let currency">
+          
+            <mat-select placeholder="اختار درجه المخاطر" [value]="currency.riskRate" [disabled]="true">
+              <mat-option *ngFor="let option of currencyOptions" [value]="option.value">
+                {{ option.viewValue }}
+              </mat-option>
+            </mat-select>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="countryId">
+          <th mat-header-cell *matHeaderCellDef>الدولة</th>
+          <td mat-cell *matCellDef="let currency">
+          
+            <mat-select placeholder="اختار الدولة" [value]="currency.countryId" [disabled]="true">
+              <mat-option *ngFor="let option of countriesOptions" [value]="option.id">
+                {{ option.nameAr }}
+              </mat-option>
+            </mat-select>
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let currency">
+            <button mat-icon-button color="primary" (click)="editCurrency(currency)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteCurrency(currency)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+  

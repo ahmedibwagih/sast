@@ -1,0 +1,131 @@
+<app-generic-alert   *ngIf="showAlert" [message]="alertMessage" [type]="alertType" (close)="onCloseAlert()"></app-generic-alert>
+
+<mat-card>
+  <mat-card-header  fxLayout="row" fxLayoutAlign="center center">
+    <mat-card-title>المستخدمين</mat-card-title>
+  </mat-card-header>
+  <mat-card-content  fxLayout="column" fxLayoutAlign="end center" style="direction: rtl;">
+    <!-- <mat-card-title>Add/Edit User</mat-card-title>  -->
+     <form #userForm="ngForm" (ngSubmit)="createUser()" style="direction: rtl;">
+
+      <mat-form-field>
+        <mat-label>اسم المستخدم</mat-label>
+        <input matInput autocomplete="new-username" placeholder="اسم المستخدم" [(ngModel)]="user.userName" name="userName" required>
+      </mat-form-field>
+
+      <!-- <mat-form-field>
+        <input matInput placeholder="User Name" name="userName" [(ngModel)]="user.userName" required>
+        <mat-error *ngIf="userForm.controls['userName'].invalid">لابد من ادخال اسم المستخدم</mat-error>
+      </mat-form-field> -->
+      
+      <mat-form-field>
+        <mat-label> كلمة المرور </mat-label>
+        <input matInput autocomplete="off" type="password"  placeholder="كلمة المرور" [(ngModel)]="user.password" name="password" required>
+      </mat-form-field>
+
+      <!-- <mat-form-field>
+        <input matInput placeholder="password" name="password" [(ngModel)]="user.password" required>
+        <mat-error *ngIf="userForm.controls['password'].invalid">لابد من ادخال كلمة المرور</mat-error>
+      </mat-form-field> -->
+
+      <mat-form-field>
+        <mat-label>  الاسم </mat-label>
+        <input matInput placeholder="الاسم" [(ngModel)]="user.fullName" name="fullName" required>
+      </mat-form-field>
+
+      <!-- <mat-form-field>
+        <input matInput placeholder="Full Name" name="fullName" [(ngModel)]="user.fullName" required>
+        <mat-error *ngIf="userForm.controls['fullName'].invalid">لابد من ادخال الاسم بالكامل</mat-error>
+      </mat-form-field> -->
+
+      <mat-form-field>
+        <mat-label> البريد الالكتروني </mat-label>
+        <input matInput  type="email"  placeholder="البريد الالكتروني" [(ngModel)]="user.email" name="email" required>
+      </mat-form-field>
+
+      <!-- <mat-form-field>
+        <input matInput type="email" placeholder="Email" name="email" [(ngModel)]="user.email" required>
+        <mat-error *ngIf="userForm.controls['email'].invalid">لابد من ادخال البريد الالكتروني</mat-error>
+      </mat-form-field> -->
+
+
+      <mat-form-field>
+        <mat-label> رقم التليفون </mat-label>
+        <input matInput placeholder="رقم التليفون" [(ngModel)]="user.phoneNumber" name="phoneNumber" required>
+      </mat-form-field>
+
+      <!-- <mat-form-field>
+        <input matInput placeholder="Phone Number" name="phoneNumber" [(ngModel)]="user.phoneNumber" required>
+        <mat-error *ngIf="userForm.controls['phoneNumber'].invalid">لابد من ادخال رقم التليفون</mat-error>
+      </mat-form-field> -->
+
+      <mat-form-field>
+        <mat-label>الوظيفة</mat-label>
+        <mat-select placeholder="اختار الوظيفة" name="JobId" [(ngModel)]="user.jobId" required>
+          <mat-option *ngFor="let option of jobsOptions" [value]="option.id">
+            {{ option.nameAr }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">{{ isEditing ? 'تعديل' : 'اضافة' }}</button>
+      <!-- <button mat-raised-button color="primary" type="submit">اضافة</button> -->
+    </form>
+ 
+    <!-- <mat-card-content  fxLayout="column" fxLayoutAlign="end center" style="direction: rtl;"> -->
+  <mat-table [dataSource]="users">
+    <ng-container matColumnDef="userName">
+      <mat-header-cell *matHeaderCellDef> اسم المستخدم </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.userName}} </mat-cell>
+    </ng-container>
+  
+
+    <!-- <ng-container matColumnDef="password" *ngIf="false" >
+      <mat-header-cell *matHeaderCellDef> كلمه المرور </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.password}} </mat-cell>
+    </ng-container> -->
+
+
+    <ng-container matColumnDef="fullName">
+      <mat-header-cell *matHeaderCellDef> الاسم بالكامل </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.fullName}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef> البريد الالكتروني </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="phoneNumber">
+      <mat-header-cell *matHeaderCellDef> رقم التليفون </mat-header-cell>
+      <mat-cell *matCellDef="let user"> {{user.phoneNumber}} </mat-cell>
+    </ng-container>
+  
+    <ng-container  matColumnDef="JobId">
+      <th  mat-header-cell *matHeaderCellDef>الوظيفة</th>
+      <td mat-cell *matCellDef="let user">
+        <mat-select (selectionChange)="onSelectionChange($event)" placeholder="اختار الوظيفة" [value]="user.jobId" >
+          <mat-option *ngFor="let option of jobsOptions" [value]="option.id">
+            {{ option.nameAr }}
+          </mat-option>
+        </mat-select>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        <button mat-icon-button color="primary" (click)="editUser(user)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteUser(user.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</mat-card-content>
+
+</mat-card>
