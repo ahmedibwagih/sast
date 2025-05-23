@@ -327,7 +327,7 @@ static class RelationalDependencyChecker
     {
 
 
-        var connectionString = "Data Source=.\\SQL2022;Initial Catalog=iExchange_AlnatheerNew;User ID=ahmed;Password=123456;TrustServerCertificate=true;";
+        var connectionString = "";
 
         var options = new DbContextOptionsBuilder<DBContext>()
             .UseSqlServer(connectionString, x => x.UseNetTopologySuite())

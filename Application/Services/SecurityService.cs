@@ -339,9 +339,7 @@ namespace Application.Services.LookUps
             string issuer = "";
             string audience = "";
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
+            
             var claims = new[]
             {
              new Claim("LoginName", input.LoginName.ToString()),
@@ -354,7 +352,7 @@ namespace Application.Services.LookUps
                 audience: audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials
+                signingCredentials: null
             );
 
 
