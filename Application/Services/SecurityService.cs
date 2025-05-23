@@ -335,9 +335,9 @@ namespace Application.Services.LookUps
             }
             
 
-            string secretKey = "P@$$w0rdP@$$w0rdP@$$w0rdP@$$w0rd";
-            string issuer = "Exchange";
-            string audience = "Exchange";
+            string secretKey = "";
+            string issuer = "";
+            string audience = "";
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -881,39 +881,7 @@ namespace Application.Services.LookUps
 
         public static string Decrypt(string encryptedText, string password)
         {
-            byte[] cipherTextWithSalt = Convert.FromBase64String(encryptedText);
-
-            using (Aes aes = Aes.Create())
-            {
-                // Extract the salt (first 16 bytes)
-                byte[] salt = new byte[16];
-                Array.Copy(cipherTextWithSalt, 0, salt, 0, salt.Length);
-
-                // Derive key and IV from the password
-                using (var keyDerivationFunction = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256))
-                {
-                    aes.Key = keyDerivationFunction.GetBytes(32); // AES-256 key
-                    aes.IV = keyDerivationFunction.GetBytes(16);  // AES IV
-                }
-
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-
-                using (var ms = new MemoryStream())
-                {
-                    // Write only the ciphertext (excluding salt) to memory stream
-                    ms.Write(cipherTextWithSalt, salt.Length, cipherTextWithSalt.Length - salt.Length);
-
-                    ms.Position = 0;
-                    using (var cryptoStream = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
-                    {
-                        using (var sr = new StreamReader(cryptoStream, Encoding.UTF8))
-                        {
-                            return sr.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            return encryptedText;
         }
 
 
